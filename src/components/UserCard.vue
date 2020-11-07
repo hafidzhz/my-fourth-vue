@@ -1,7 +1,9 @@
 <template>
   <li>
-    <h2>{{ name }}</h2>
+    <h2><p>{{ name }}</p> <p v-if="isFavorite">Favorited</p></h2>
     <button @click="showData">Show Details</button>
+    <button @click="setFavorite">Set Favorite</button>
+    <button @click="deleteData">Delete</button>
     <ul v-if="isShown">
       <li><strong>Phone:</strong> {{ phone }}</li>
       <li><strong>Email:</strong> {{ email }}</li>
@@ -13,18 +15,28 @@
 export default {
   name: 'User Card',
   props: {
+    id: String,
     name: String,
     phone: String,
-    email: String
+    email: String,
+    favorite: Boolean
   },
   data () {
     return {
-      isShown: false
+      isShown: false,
+      isFavorite: false
     }
   },
   methods: {
     showData () {
       this.isShown = !this.isShown
+    },
+    setFavorite () {
+      this.isFavorite = !this.isFavorite
+      this.$emit('toogle-favorite', this.id, this.isFavorite)
+    },
+    deleteData () {
+      this.$emit('delete-data', this.id)
     }
   }
 }
@@ -35,11 +47,9 @@ ul {
   padding: 0;
   list-style: none;
 }
+
 li {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin: 1rem auto;
-  border-radius: 10px;
-  padding: 1rem;
   text-align: center;
   width: 90%;
   max-width: 40rem;
